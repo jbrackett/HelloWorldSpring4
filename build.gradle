@@ -1,0 +1,54 @@
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "war"
+apply plugin: "tomcat"
+
+war { baseName='hello-world' }
+
+sourceCompatibility = 1.7
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies { classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.0' }
+}
+
+repositories {
+  mavenCentral()
+}
+
+ext {
+  jacksonVersion="2.2.3"
+  springVersion="4.0.1.RELEASE"
+  tomcatVersion="7.0.50"
+}
+
+dependencies {
+
+  providedCompile "javax.servlet:javax.servlet-api:3.1.0", "javax.servlet.jsp:jsp-api:2.1"
+
+  runtime ("javax.servlet:jstl:1.2") {
+    exclude group: "javax.servlet", module: "javax.servlet-api"
+    exclude group: "javax.servlet", module: "jsp-api"
+  }
+
+  compile "org.springframework:spring-context:$springVersion"
+  compile "org.springframework:spring-core:$springVersion"
+  compile "org.springframework:spring-web:$springVersion"
+  compile "org.springframework:spring-webmvc:$springVersion"
+
+  compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+  compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+  compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+
+  testCompile "junit:junit:4.11"
+  testCompile "org.springframework:spring-test:$springVersion"
+
+  tomcat "org.apache.tomcat.embed:tomcat-embed-core:$tomcatVersion",
+      "org.apache.tomcat.embed:tomcat-embed-logging-juli:$tomcatVersion"
+  tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:$tomcatVersion") {
+    exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+  }
+}
